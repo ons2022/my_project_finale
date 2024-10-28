@@ -1,4 +1,5 @@
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view ,permission_classes
+from rest_framework.permissions import IsAdminUser
 from rest_framework.response import Response
 from django.contrib.auth import get_user_model
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -53,3 +54,19 @@ def login(request):
             'role': role
         })
     return Response({'error': 'Invalid credentials'}, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET'])
+@permission_classes([IsAdminUser])  # Only allow admins
+def get_all_users(request):
+    users = User.objects.all().values('id', 'username', 'is_staff', 'is_active')
+    return Response(users, status=status.HTTP_200_OK)
+
+@api_view(['DELETE'])
+@permission_classes([IsAdminUser])  # Only allow admins
+def delete_user(request, user_id):
+    try:
+        user = User.objects.get(id=user_id)
+        user.delete()
+        return Response({'message': 'User deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
+    except User.DoesNotExist:
+        return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
