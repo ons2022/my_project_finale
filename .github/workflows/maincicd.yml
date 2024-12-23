@@ -1,0 +1,27 @@
+name: Simple CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the Code
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # Step 2: Print a Build Message
+      - name: Build Step
+        run: echo "Building the application..."
+
+      # Step 3: Print a Test Message
+      - name: Test Step
+        run: echo "Running tests... All tests passed!"
+
+      # Step 4: Print a Deployment Message
+      - name: Deploy Step
+        run: echo "Deploying application... Deployment complete!"
